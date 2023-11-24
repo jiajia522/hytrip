@@ -1,7 +1,7 @@
 <template>
   <div class="detail top-page" ref="detailRef">
     <tab-control 
-      :titles='titles' 
+      :titles='names' 
       v-if="showTabControl" 
       class="tabs" 
       @tabItemClick="tabItemClick"
@@ -13,11 +13,11 @@
       left-arrow
       @click-left="onClickLeft"
     />
-    <div class="main" v-if="mainPart">
+    <div class="main" v-if="mainPart" v-memo="[mainPart]">
       <detail-swipe :swipe-data="mainPart.topModule.housePicture.housePics"/>
       <detail-infos name="描述" :ref="getSectionRef" :top-infos="mainPart.topModule"/>
       <detail-facility name="设施" :ref="getSectionRef" :house-facility="mainPart.dynamicModule.facilityModule.houseFacility"/>
-      <detail-landlord ref='landlordRef' name="房东"  :landlord="mainPart.dynamicModule.landlordModule"/>
+      <detail-landlord name="房东" :ref="getSectionRef" :landlord="mainPart.dynamicModule.landlordModule"/>
       <detail-comment name="评论" :ref="getSectionRef" :comment="mainPart.dynamicModule.commentModule"/>
       <detail-notice name="须知" :ref="getSectionRef" :order-rules="mainPart.dynamicModule.rulesModule.orderRules"/>
       <detail-map name="周边" :ref="getSectionRef" :position="mainPart.dynamicModule.positionModule"/>
@@ -61,20 +61,47 @@ const detailRef = ref()
 console.log(detailRef)
 const { isReachBottom ,scrollTop} = useScroll(detailRef)
 const showTabControl = computed(()=>{
-   return scrollTop.value>100
+   return scrollTop.value>200
   }
 )
- const landlordRef = ref()
-//   //  landlord.value 拿到的是组件对象 .el拿到的是组件对象的根元素
-console.log(landlordRef.value)
+// const landlordRef = ref()
+// landlord.value 拿到的是组件对象 .el拿到的是组件对象的根元素
+// console.log(landlordRef.value)
+
+// const sectionEls = []
+// const getSectionRef = (value) => {
+//   console.log(value.$el)
+//   sectionEls.push(value.$el)
+// }
+// const tabItemClick = (index) => {
+//   console.log(index)
+//   detailRef.value.scrollTo({
+//     top: sectionEls[index].offsetTop - 44,
+//     behavior: 'smooth'
+//   })
+// } 
+
+const sectionEls = ref({})
+
+// console.log(names)
+const getSectionRef = (item) => {
+  console.log(item)
+  console.log(item.$el)
+  const name = item.$el.getAttribute('name')
+  sectionEls.value[name] = item.$el
+  
+}
+const names = computed( ()=>{
+  return Object.keys(sectionEls.value)
+})
 const tabItemClick = (index) => {
-  console.log(index)
+  const key = Object.keys(sectionEls.value)[index]
+  const el = sectionEls.value[key]
   detailRef.value.scrollTo({
-    top: 500,
+    top: el.offsetTop - 44,
     behavior: 'smooth'
   })
 } 
-
 </script>
 
 <style lang="less" scoped>

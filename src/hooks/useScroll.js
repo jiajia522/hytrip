@@ -30,7 +30,6 @@ import { onActivated, onDeactivated, onMounted,onUnmounted, ref } from 'vue';
 import { throttle } from 'underscore';
 // 传入元素的ref 。
 export default function useScroll (elRef)  {
-  console.log('usescroll')
   let el = window
   const isReachBottom = ref(false)
   const clientHeight = ref(0)
@@ -38,7 +37,6 @@ export default function useScroll (elRef)  {
   const scrollHeight = ref(0)
 
   const scrollListenerHandler = throttle(() => {
-    console.log('滚动')
     if(el === window) {
       scrollHeight.value = document.documentElement.scrollHeight //可滚动高度
       scrollTop.value = document.documentElement.scrollTop //向上滚动高度
@@ -51,7 +49,6 @@ export default function useScroll (elRef)  {
    
     if(scrollHeight.value <= scrollTop.value + clientHeight.value){
       // 滚动到底部了
-      console.log("gundogndaodibu")
       isReachBottom.value = true
     }
   },100)
